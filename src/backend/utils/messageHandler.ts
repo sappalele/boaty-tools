@@ -64,7 +64,6 @@ export const handleMessage = (message: Message) => {
   switch (message.type) {
     case "CHECK_VERSION":
       checkAppVersion(message.data).then((versionMatch) => {
-        console.log("version match", versionMatch);
         if (!versionMatch) {
           process.parentPort.postMessage({
             type: "NEW_VERSION",
