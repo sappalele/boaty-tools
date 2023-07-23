@@ -9,6 +9,8 @@ declare const UTILITY_PROCESS_MODULE_PATH: string;
 
 let utilityWorker: UtilityProcess;
 
+app.setName("Boaty Tools");
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit();
@@ -48,6 +50,7 @@ const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     show: false,
+    icon: "assets/icon.png",
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },

@@ -1,10 +1,7 @@
-import { MakerDeb } from "@electron-forge/maker-deb";
-import { MakerRpm } from "@electron-forge/maker-rpm";
-import { MakerSquirrel } from "@electron-forge/maker-squirrel";
-import { MakerZIP } from "@electron-forge/maker-zip";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import type { ForgeConfig } from "@electron-forge/shared-types";
+import path from "path";
 import UtilityProcessPlugin from "./utility.plugin";
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
@@ -13,13 +10,37 @@ import { utilityConfig } from "./webpack.utility.config";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: path.join(__dirname, "/src/assets/icon"),
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({}),
+    {
+      name: "@electron-forge/maker-squirrel",
+      config: {
+        iconUrl: "https://images2.imgbox.com/16/4c/QM7WW5l7_o.png",
+        setupIcon: path.join(__dirname, "/src/assets/icon.ico"),
+      },
+    },
+    {
+      name: "@electron-forge/maker-deb",
+      config: {
+        options: {
+          icon: path.join(__dirname, "/src/assets/icon.png"),
+        },
+      },
+    },
+    {
+      name: "@electron-forge/maker-dmg",
+      config: {
+        icon: path.join(__dirname, "/src/assets/icon.icns"),
+      },
+    },
+    {
+      name: "@electron-forge/maker-wix",
+      config: {
+        icon: path.join(__dirname, "/src/assets/icon.ico"),
+      },
+    },
   ],
   plugins: [
     new UtilityProcessPlugin(utilityConfig),

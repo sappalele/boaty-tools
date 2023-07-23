@@ -17,3 +17,4 @@ db.db*
 /out
 /dist_utility/*
 dist_utility/utility_process/index.js
+.DS_Store

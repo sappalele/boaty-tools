@@ -30,7 +30,7 @@ const PromptInput = () => {
             <Box
               px={8}
               transition="all 0.5s"
-              pr={prompt.prompt ? "122px" : 8}
+              pr={prompt.prompt || prompt.refImages?.length > 1 ? "122px" : 8}
               resize="none"
               w="800px"
               h="100px"
