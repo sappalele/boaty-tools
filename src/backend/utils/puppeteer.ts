@@ -209,7 +209,7 @@ const handleUpscaleCompleted = async (
   updater: (prompt: Prompt) => Promise<RxDocument<Prompt>>
 ) => {
   logger.log("handleUpscaleCompleted", promptString, elementId, upscaleIndex);
-  let prompt = await getUpscaledPrompt(promptString, "WAITING", upscaleIndex);
+  const prompt = await getUpscaledPrompt(promptString, "WAITING", upscaleIndex);
 
   if (!prompt) {
     logger.error("Upscale prompt not found", promptString);
@@ -289,7 +289,7 @@ const handleCompletedPrompt = async (
     status: "GETTING_SEED",
     jobId,
     elementId,
-    type: !!spanArray.find((s) => s.startsWith("- Pan"))
+    type: spanArray.find((s) => s.startsWith("- Pan"))
       ? "PAN"
       : prompt._data.type,
   });
@@ -421,8 +421,10 @@ const clickReactionAndCompleteJob = async (
   await pollUntil(
     async () => {
       seedMessageId = await page.evaluate((jobId) => {
-        var elements = document.querySelectorAll('[class*="messageListItem"]');
-        var res = Array.prototype.filter.call(elements, function (element) {
+        const elements = document.querySelectorAll(
+          '[class*="messageListItem"]'
+        );
+        const res = Array.prototype.filter.call(elements, function (element) {
           return RegExp(jobId).test(element.textContent);
         });
 
@@ -512,9 +514,8 @@ export const promptBot = async (
   prompt: Prompt,
   updater: (prompt: Prompt) => Promise<RxDocument<Prompt>>
 ) => {
-  let currentPrompt = prompt;
   try {
-    const populatedPrompt = await populatePrompt(currentPrompt as any);
+    const populatedPrompt = await populatePrompt(prompt as any);
     console.time("setup");
     const { page } = await initPuppeteer(true);
     await goToBotChannel(page);
@@ -537,7 +538,7 @@ export const promptBot = async (
   } catch (error) {
     logger.error("Error occurred while running prompt", error);
     await updater({
-      ...currentPrompt,
+      ...prompt,
       status: "FAILED",
     });
   }
@@ -576,8 +577,7 @@ export const variatePromptBot = async (
 export const developPromptBot = async (
   prompt: Prompt,
   action: DevelopAction,
-  customZoom: number = 0,
-  updater: (prompt: Prompt) => Promise<RxDocument<Prompt>>
+  customZoom = 0
 ) => {
   const { page } = await initPuppeteer(true);
   await goToBotChannel(page);
@@ -598,7 +598,7 @@ export const developPromptBot = async (
     case "ZOOM_OUT_1.5X":
       btn = await msgElement.$(`button ::-p-text(Zoom Out 1.5x)`);
       break;
-    case "ZOOM_OUT_CUSTOM":
+    case "ZOOM_OUT_CUSTOM": {
       btn = await msgElement.$(`button ::-p-text(Custom Zoom)`);
       await btn.click();
 
@@ -612,6 +612,7 @@ export const developPromptBot = async (
 
       await page.click('[type="submit"');
       return;
+    }
     case "PAN_LEFT":
       btn = await msgElement.$(`[data-name="⬅️"]`);
       break;
@@ -738,6 +739,22 @@ const goToBotChannel = async (page: Page) => {
 
   const currentUrl = page.url();
   await upsertUrl("bot", currentUrl);
+};
+
+export const checkAppVersion = async (version: string) => {
+  const { page } = await initPuppeteer(true);
+
+  await page.goto("https://github.com/sappalele/boaty-tools/releases");
+
+  const versionFromPage = await page.evaluate(() => {
+    return document.querySelectorAll(
+      'a[href*="/sappalele/boaty-tools/releases/tag"]'
+    )[0].textContent;
+  });
+
+  await page.close();
+
+  return versionFromPage === version;
 };
 
 const addLocalStorage = async (page: Page) => {

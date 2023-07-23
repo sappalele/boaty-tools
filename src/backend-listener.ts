@@ -3,7 +3,13 @@ import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { Image, PopulatedPrompt, Project } from "./backend/utils/db";
 import { IpcMessage } from "./ipcHandler";
-import { imagesAtom, projectsAtom, promptsAtom, signInAtom } from "./jotai";
+import {
+  imagesAtom,
+  projectsAtom,
+  promptsAtom,
+  signInAtom,
+  versionAtom,
+} from "./jotai";
 
 export const sendIpcMessage = (message: IpcMessage) => {
   window.api.send("message", message);
@@ -13,6 +19,7 @@ export const initListener = () => {
   const [, setPrompts] = useAtom(promptsAtom);
   const [, setImages] = useAtom(imagesAtom);
   const [, setProjects] = useAtom(projectsAtom);
+  const [, setVersion] = useAtom(versionAtom);
   const [signIn, setSignIn] = useAtom(signInAtom);
   const toast = useToast();
 
@@ -57,6 +64,8 @@ export const initListener = () => {
           isClosable: true,
           position: "top",
         });
+      case "NEW_VERSION":
+        return setVersion({ newAvailable: true });
     }
   };
 
@@ -75,6 +84,7 @@ export const initListener = () => {
     if (signIn.signedIn) {
       sendIpcMessage({ type: "GET_PROMPTS" });
       sendIpcMessage({ type: "GET_PROJECTS" });
+      sendIpcMessage({ type: "CHECK_VERSION" });
     }
   }, [signIn.signedIn]);
 };

@@ -38,6 +38,9 @@ export const signInAtom = atomWithStorage("signin", {
   signedIn: false,
   loading: true,
 });
+export const versionAtom = atomWithStorage("version", {
+  newAvailable: false,
+});
 export const currentPromptAtom = atom<{
   prompt: string;
   showOptions?: boolean;

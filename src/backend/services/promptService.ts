@@ -43,7 +43,7 @@ export const waitForPrompts = async (updater = updateAndSendPrompt) => {
 
 export const updateAndSendPrompt = async (
   prompt: Prompt,
-  updateModified: boolean = true
+  updateModified = true
 ) => {
   const updatedPrompt = await upsertPrompt({
     ...prompt,
@@ -162,14 +162,14 @@ export const developPrompt = async (
   });
 
   await waitForPrompts();
-  await developPromptBot(newPrompt, action, customZoom, updater);
+  await developPromptBot(newPrompt, action, customZoom);
 };
 
 export const addRefImagesPrompt = async (filePaths: string[]) => {
   await addRefImagesToChannel(filePaths);
 };
 
-export const recoverBrokenPrompts = async (updater = updateAndSendPrompt) => {
+export const recoverBrokenPrompts = async () => {
   const brokenPrompts = await getPromptsByStatus("GETTING_SEED");
 
   if (brokenPrompts.length === 0) {

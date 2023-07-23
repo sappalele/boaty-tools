@@ -1,6 +1,6 @@
 import { Image } from "@chakra-ui/react";
 import { FC } from "react";
-import { sendIpcMessage } from "../backend-listener";
+import { sendIpcMessage } from "../../../backend-listener";
 
 const Logo: FC<{ size?: "small" | "big" }> = ({ size = "big" }) => {
   return (

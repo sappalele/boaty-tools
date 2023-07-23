@@ -325,7 +325,7 @@ export const initDB = async () => {
   new Array(Object.keys(collections).length + 1)
     .fill("")
     .forEach(async (o, i) => {
-      let dbFile = await fs.open(`${dbName}.db.${i}`, "a");
+      const dbFile = await fs.open(`${dbName}.db.${i}`, "a");
       await dbFile.close();
     });
 

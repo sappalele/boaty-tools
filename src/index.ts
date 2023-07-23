@@ -23,7 +23,10 @@ const createUtilityWorker = (mainWindow: BrowserWindow) => {
     app.getPath("userData"),
   ]);
 
-  utilityWorker.on("spawn", () => console.log("spawned new utilityProcess"));
+  utilityWorker.on("spawn", () => {
+    console.log("spawned new utilityProcess");
+  });
+
   utilityWorker.on("exit", (code) =>
     // recover utilityProcess on exit
     {

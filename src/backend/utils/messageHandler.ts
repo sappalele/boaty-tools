@@ -18,7 +18,11 @@ import {
   upsertPrompt,
 } from "./db";
 import { logger } from "./logger";
-import { getSignInStatusFromDiscord, signInToDiscord } from "./puppeteer";
+import {
+  checkAppVersion,
+  getSignInStatusFromDiscord,
+  signInToDiscord,
+} from "./puppeteer";
 
 export type DevelopAction =
   | "VARY_STRONG"
@@ -51,12 +55,23 @@ export type Message =
   | { type: "GET_IMAGES" }
   | { type: "GET_PROJECTS" }
   | { type: "GET_SIGNIN_STATUS" }
+  | { type: "CHECK_VERSION"; data: string }
   | { type: "SIGN_IN" };
 
 export const handleMessage = (message: Message) => {
   logger.log("message received", message);
 
   switch (message.type) {
+    case "CHECK_VERSION":
+      checkAppVersion(message.data).then((versionMatch) => {
+        console.log("version match", versionMatch);
+        if (!versionMatch) {
+          process.parentPort.postMessage({
+            type: "NEW_VERSION",
+          });
+        }
+      });
+      break;
     case "PROMPT":
       runPrompt(message.data);
       break;

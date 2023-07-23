@@ -1,4 +1,4 @@
-import { UtilityProcess, ipcMain, shell } from "electron";
+import { UtilityProcess, app, ipcMain, shell } from "electron";
 import { Image, PopulatedPrompt, Project } from "./backend/utils/db";
 import { DevelopAction } from "./backend/utils/messageHandler";
 
@@ -32,6 +32,8 @@ export type IpcMessage =
   | { type: "OPEN_EXTERNAL_URL"; data: string }
   | { type: "OPEN_EXTERNAL_FILE"; data: string }
   | { type: "ERROR"; data: string }
+  | { type: "CHECK_VERSION" }
+  | { type: "NEW_VERSION" }
   | {
       type: "LOG";
       data: {
@@ -50,6 +52,13 @@ export const handleIpcMessages = (utilityWorker: UtilityProcess) => {
 
     if (message.type === "OPEN_EXTERNAL_FILE") {
       return shell.openPath(message.data);
+    }
+
+    if (message.type === "CHECK_VERSION") {
+      return utilityWorker.postMessage({
+        type: message.type,
+        data: app.getVersion(),
+      });
     }
 
     return utilityWorker.postMessage({

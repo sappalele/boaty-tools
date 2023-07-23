@@ -1,7 +1,10 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { AnimatePresence, motion } from "framer-motion";
-import { ImMagicWand } from "react-icons/im";
+import { useAtomValue } from "jotai";
+import { ImGithub, ImMagicWand } from "react-icons/im";
+import { sendIpcMessage } from "../../backend-listener";
+import { versionAtom } from "../../jotai";
 import { usePrompt } from "../../usePrompt";
 import PromptOptionsButton from "./options/PromptOptionsButton";
 import RefImagesButton from "./ref-images/RefImagesButton";
@@ -13,6 +16,7 @@ const Wrapper = styled(Box)`
 
 const PromptInput = () => {
   const { sendPrompt, prompt, setPrompt } = usePrompt();
+  const { newAvailable } = useAtomValue(versionAtom);
 
   return (
     <form
@@ -24,7 +28,36 @@ const PromptInput = () => {
       }}
     >
       <Wrapper pos="fixed" bottom={0} left={0} right={0} zIndex={11}>
-        <Box display="flex" justifyContent="space-around" alignItems="center">
+        <Box
+          display="flex"
+          justifyContent="space-around"
+          alignItems="center"
+          pos="relative"
+        >
+          {newAvailable && (
+            <Box
+              pos="absolute"
+              right={4}
+              top="-40px"
+              display="flex"
+              alignItems="center"
+            >
+              <Button
+                w="full"
+                colorScheme="green"
+                borderBottomEndRadius={0}
+                borderBottomStartRadius={0}
+                onClick={() =>
+                  sendIpcMessage({
+                    type: "OPEN_EXTERNAL_URL",
+                    data: "https://github.com/sappalele/boaty-tools/releases",
+                  })
+                }
+              >
+                <Text mr={4}> New version available</Text> <ImGithub />
+              </Button>
+            </Box>
+          )}
           <RefImagesButton />
           <Box pos="relative">
             <Box
