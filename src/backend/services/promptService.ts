@@ -173,7 +173,9 @@ export const recoverBrokenPrompts = async () => {
   const brokenPrompts = await getPromptsByStatus("GETTING_SEED");
 
   if (brokenPrompts.length === 0) {
-    return;
+    return setTimeout(async () => {
+      await recoverBrokenPrompts();
+    }, 60000);
   }
 
   logger.log("recovering broken prompts", brokenPrompts);

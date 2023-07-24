@@ -130,9 +130,28 @@ export const promptWatcher = async (
             return;
           }
 
+          if (textContent.includes("Action needed to continue")) {
+            return process.parentPort.postMessage({
+              type: "ERROR",
+              data: "One or more prompts need attention, check Discord for more info",
+            });
+          }
+
+          if (
+            textContent.includes("already requested an upscale for this image")
+          ) {
+            return process.parentPort.postMessage({
+              type: "ERROR",
+              data:
+                "Upscale already requested for image with prompt: " +
+                promptString,
+            });
+          }
+
           if (
             textContent.includes("Image #") &&
-            textContent.includes("Vary (Strong)Vary (Subtle)")
+            (textContent.includes("Vary (Strong)Vary (Subtle)") ||
+              textContent.includes("Zoom Out 2xZoom Out 1.5"))
           ) {
             // most likely a completed upscale prompt
             const imageIndex = spanArray

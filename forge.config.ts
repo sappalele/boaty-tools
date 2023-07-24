@@ -35,12 +35,6 @@ const config: ForgeConfig = {
         icon: path.join(__dirname, "/src/assets/icon.icns"),
       },
     },
-    {
-      name: "@electron-forge/maker-wix",
-      config: {
-        icon: path.join(__dirname, "/src/assets/icon.ico"),
-      },
-    },
   ],
   plugins: [
     new UtilityProcessPlugin(utilityConfig),

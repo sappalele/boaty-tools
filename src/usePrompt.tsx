@@ -29,7 +29,8 @@ export const usePrompt = (outerPrompt?: PopulatedPrompt) => {
     sendIpcMessage({
       type: "PROMPT",
       data: {
-        prompt: prompt.prompt,
+        // trim newlines
+        prompt: prompt.prompt.trim().replace(/(\r\n|\n|\r)/gm, ""),
         options: diff,
         refImages: prompt.refImages || [],
         project: project?.id,

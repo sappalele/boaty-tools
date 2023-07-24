@@ -17,6 +17,12 @@ const Wrapper = styled(Box)`
 const PromptInput = () => {
   const { sendPrompt, prompt, setPrompt } = usePrompt();
   const { newAvailable } = useAtomValue(versionAtom);
+  const getFontSize = () => {
+    if (prompt.prompt.length > 80) return "xs";
+    if (prompt.prompt.length > 64) return "sm";
+
+    return "md";
+  };
 
   return (
     <form
@@ -74,6 +80,7 @@ const PromptInput = () => {
               alignItems="center"
               color="white"
               textAlign="center"
+              fontSize={getFontSize()}
               placeholder="Imagine something! Enter your prompt here 🤖"
               onChange={(e: React.ChangeEvent<any>) =>
                 setPrompt((p) => ({ ...p, prompt: e.target.value }))

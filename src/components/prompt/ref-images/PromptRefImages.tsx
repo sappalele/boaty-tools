@@ -114,6 +114,8 @@ const PromptRefImages = () => {
                         w="full"
                         h="full"
                         objectFit="contain"
+                        maxW="180px"
+                        maxH="180px"
                       />
                     </Box>
                   </Button>
