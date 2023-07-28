@@ -810,8 +810,7 @@ const initPuppeteer = async (headless: boolean) => {
     if (!headlessBrowser || !headlessBrowser.isConnected)
       headlessBrowser = await puppeteer.launch({
         executablePath: chromePaths.chrome,
-        //headless: "new",
-        headless: false,
+        headless: "new",
       });
 
     const page = await headlessBrowser.newPage();
