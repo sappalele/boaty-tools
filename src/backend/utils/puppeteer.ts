@@ -694,6 +694,7 @@ export const addRefImagesToChannel = async (filePaths: string[]) => {
         height: i.height,
         width: i.width,
         created: new Date().getTime(),
+        type: "REF",
       });
 
       return savedImage;
@@ -806,10 +807,11 @@ const initPuppeteer = async (headless: boolean) => {
   logger.log("initiliazing puppeteer " + headless ? "headless" : "headed");
 
   if (headless) {
-    if (!headlessBrowser)
+    if (!headlessBrowser || !headlessBrowser.isConnected)
       headlessBrowser = await puppeteer.launch({
         executablePath: chromePaths.chrome,
-        headless: "new",
+        //headless: "new",
+        headless: false,
       });
 
     const page = await headlessBrowser.newPage();
@@ -820,7 +822,7 @@ const initPuppeteer = async (headless: boolean) => {
   }
 
   if (!headless) {
-    if (!headedBrowser)
+    if (!headedBrowser || !headedBrowser.isConnected)
       headedBrowser = await puppeteer.launch({
         executablePath: chromePaths.chrome,
         headless: false,

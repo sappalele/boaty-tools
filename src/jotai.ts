@@ -25,6 +25,11 @@ export const promptFilterAtom = atomWithStorage("promptFilter", {
   favorites: false,
   zoom: 1,
 });
+export const refImagesFilterAtom = atomWithStorage("refImagesFilter", {
+  search: "",
+  favorites: false,
+  onlyAdded: false,
+});
 export const projectsAtom = atomWithStorage(
   "projects",
   new Map<string, Project>()
