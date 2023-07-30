@@ -127,3 +127,11 @@ export const saveImagesFromUrls = async (name: string, imageUrls: string[]) => {
   }
   return paths;
 };
+
+export const deleteImage = (path: string) => {
+  fs.unlink(path, (err) => {
+    if (err) {
+      logger.error("Error occurred while deleting image:", err);
+    }
+  });
+};

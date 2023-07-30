@@ -1,7 +1,9 @@
 import {
   addRefImagesPrompt,
+  deletePromptAndImages,
   developPrompt,
   recoverBrokenPrompts,
+  runBatchPrompt,
   runPrompt,
   upscalePrompt,
   variatePrompt,
@@ -9,7 +11,6 @@ import {
 import {
   PopulatedPrompt,
   Project,
-  deletePrompt,
   getAllImages,
   getAllProjects,
   getAllPrompts,
@@ -37,6 +38,7 @@ export type DevelopAction =
 
 export type Message =
   | { type: "PROMPT"; data: PopulatedPrompt }
+  | { type: "BATCH_PROMPT"; data: PopulatedPrompt[] }
   | { type: "UPDATE_PROMPT"; data: PopulatedPrompt }
   | { type: "ADD_REF_IMAGES"; data: string[] }
   | { type: "ADD_PROJECT"; data: Project }
@@ -74,6 +76,9 @@ export const handleMessage = (message: Message) => {
     case "PROMPT":
       runPrompt(message.data);
       break;
+    case "BATCH_PROMPT":
+      runBatchPrompt(message.data);
+      break;
     case "UPSCALE_PROMPT":
       upscalePrompt(message.data.id, message.data.index);
       break;
@@ -104,7 +109,7 @@ export const handleMessage = (message: Message) => {
 
       break;
     case "DELETE_PROMPT":
-      deletePrompt(message.data.id).then(() => {
+      deletePromptAndImages(message.data.id).then(() => {
         process.parentPort.postMessage({
           type: "PROMPT_DELETED",
           data: { id: message.data.id },

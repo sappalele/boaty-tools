@@ -51,7 +51,7 @@ const Prompts = () => {
     );
 
   return (
-    <Center w="full" id="prompts-container">
+    <Center w="full">
       <MotionBox
         display="flex"
         flexWrap="wrap"

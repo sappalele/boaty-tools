@@ -3,6 +3,26 @@ import { atomWithStorage } from "jotai/utils";
 import { isEqual } from "lodash";
 import { Image, PopulatedPrompt, Project } from "./backend/utils/db";
 
+export type PromptState = {
+  prompt: string;
+  showOptions?: boolean;
+  showImages?: boolean;
+  batchMode?: boolean;
+  refImages?: Image[];
+  options?: {
+    aspectRatio?: string;
+    chaos?: number;
+    no?: string;
+    quality?: number;
+    seed?: number;
+    stylize?: number;
+    stop?: number;
+    tile?: boolean;
+    version?: string;
+    weird?: number;
+  };
+};
+
 export const defaultOptions = {
   aspectRatio: "1:1",
   chaos: 0,
@@ -46,24 +66,7 @@ export const signInAtom = atomWithStorage("signin", {
 export const versionAtom = atom({
   newAvailable: false,
 });
-export const currentPromptAtom = atom<{
-  prompt: string;
-  showOptions?: boolean;
-  showImages?: boolean;
-  refImages?: Image[];
-  options?: {
-    aspectRatio?: string;
-    chaos?: number;
-    no?: string;
-    quality?: number;
-    seed?: number;
-    stylize?: number;
-    stop?: number;
-    tile?: boolean;
-    version?: string;
-    weird?: number;
-  };
-}>({
+export const currentPromptAtom = atom<PromptState>({
   prompt: "",
   options: defaultOptions,
   showOptions: false,

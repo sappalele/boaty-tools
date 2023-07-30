@@ -4,6 +4,7 @@ import { DevelopAction } from "./backend/utils/messageHandler";
 
 export type IpcMessage =
   | { type: "PROMPT"; data: PopulatedPrompt }
+  | { type: "BATCH_PROMPT"; data: PopulatedPrompt[] }
   | { type: "UPDATE_PROMPT"; data: PopulatedPrompt }
   | { type: "UPSCALE_PROMPT"; data: { id: string; index: number } }
   | { type: "VARIATE_PROMPT"; data: { id: string; index: number } }

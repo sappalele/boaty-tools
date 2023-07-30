@@ -31,8 +31,8 @@ const PromptImages: React.FC<PromptImagesProps> = ({ prompt, hover }) => {
         <Box
           key={image.url}
           pos="relative"
-          maxW={prompt.images?.length === 4 ? "50%" : "100%"}
-          maxH={prompt.images?.length === 4 ? "50%" : "100%"}
+          w={prompt.images?.length === 4 ? "50%" : "100%"}
+          h={prompt.images?.length === 4 ? "50%" : "100%"}
         >
           <Image
             src={image.url || image.path}

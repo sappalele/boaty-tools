@@ -12,7 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useAtomValue } from "jotai";
 import { FC, useRef } from "react";
 import { GiChewedSkull } from "react-icons/gi";
-import { RiZzzFill } from "react-icons/ri";
+import { RiSeedlingFill, RiZzzFill } from "react-icons/ri";
 import { useHoverDirty } from "react-use";
 import { PopulatedPrompt, Prompt } from "../../backend/utils/db";
 import { promptFilterAtom } from "../../jotai";
@@ -122,8 +122,8 @@ const Prompt: FC<{ prompt: PopulatedPrompt }> = ({ prompt }) => {
         >
           {prompt.status === "WAITING" && <RiZzzFill color="white" />}
           {prompt.status === "FAILED" && <GiChewedSkull color="white" />}
-          {(prompt.status === "RUNNING" ||
-            prompt.status === "GETTING_SEED") && <Spinner color="white" />}
+          {prompt.status === "RUNNING" && <Spinner color="white" />}
+          {prompt.status === "GETTING_SEED" && <RiSeedlingFill color="white" />}
         </Box>
       )}
       <>

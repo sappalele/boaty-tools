@@ -24,7 +24,10 @@ const Dashboard = () => {
         </Box>
       </Box>
 
-      <Box style={{ overflow: "auto", width: "100vw", height: "100vh" }}>
+      <Box
+        id="prompts-container"
+        style={{ overflow: "auto", width: "100vw", height: "100vh" }}
+      >
         <Prompts />
       </Box>
       <PromptRefImages />

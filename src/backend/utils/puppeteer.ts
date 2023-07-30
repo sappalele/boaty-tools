@@ -17,6 +17,7 @@ import {
   upsertImage,
   upsertUrl,
 } from "./db";
+import { pollUntil, wait } from "./helpers";
 import { saveImagesFromUrls } from "./image";
 import { logger } from "./logger";
 import { DevelopAction } from "./messageHandler";
@@ -178,7 +179,10 @@ export const promptWatcher = async (
               updater,
               spanArray
             );
-            await clickReactionAndCompleteJob(page, completed._data, updater);
+
+            if (completed)
+              await clickReactionAndCompleteJob(page, completed._data, updater);
+
             return;
           }
         }
@@ -787,9 +791,6 @@ const addLocalStorage = async (page: Page) => {
   }, entries);
 };
 
-const wait = (milliseconds: number) =>
-  new Promise((r) => setTimeout(r, milliseconds + Math.random() * 1000));
-
 const bypassLocalStorageOverride = (page: Page) =>
   page.evaluateOnNewDocument(() => {
     // Preserve localStorage as separate var to keep it before any overrides
@@ -833,27 +834,6 @@ const initPuppeteer = async (headless: boolean) => {
 
     return { browser: headedBrowser, page };
   }
-};
-
-const pollUntil = async (
-  predicate: () => boolean | Promise<boolean>,
-  pollInterval: number,
-  timeout: number
-) => {
-  const startTime = Date.now();
-  let res = false;
-
-  while (Date.now() - startTime < timeout && !res) {
-    res = await predicate();
-
-    if (res) {
-      return;
-    }
-
-    await wait(pollInterval);
-  }
-
-  logger.error("Condition not met within the specified timeout.");
 };
 
 const extractIdFromUrl = (url: string): string | null => {

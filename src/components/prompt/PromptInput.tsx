@@ -1,8 +1,18 @@
-import { Box, Button, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
+  Button,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtomValue } from "jotai";
 import { ImGithub, ImMagicWand } from "react-icons/im";
+import { MdOutlineBatchPrediction } from "react-icons/md";
 import { sendIpcMessage } from "../../backend-listener";
 import { versionAtom } from "../../jotai";
 import { usePrompt } from "../../usePrompt";
@@ -17,6 +27,8 @@ const Wrapper = styled(Box)`
 const PromptInput = () => {
   const { sendPrompt, prompt, setPrompt } = usePrompt();
   const { newAvailable } = useAtomValue(versionAtom);
+  const invalidPrompt =
+    prompt.prompt.includes("-") || prompt.prompt.includes("—");
   const getFontSize = () => {
     if (prompt.prompt.length > 80) return "xs";
     if (prompt.prompt.length > 64) return "sm";
@@ -33,12 +45,21 @@ const PromptInput = () => {
         sendPrompt();
       }}
     >
-      <Wrapper pos="fixed" bottom={0} left={0} right={0} zIndex={11}>
+      <Wrapper
+        pos="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        zIndex={11}
+        transition="all 0.5s"
+        h={prompt.batchMode ? "300px" : "100px"}
+      >
         <Box
           display="flex"
           justifyContent="space-around"
           alignItems="center"
           pos="relative"
+          h="full"
         >
           {newAvailable && (
             <Box
@@ -65,23 +86,60 @@ const PromptInput = () => {
             </Box>
           )}
           <RefImagesButton />
-          <Box pos="relative">
+          <Box pos="relative" h="full">
+            <AnimatePresence>
+              {invalidPrompt && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Alert status="error" pos="absolute" top={-12}>
+                    <AlertIcon />
+                    <AlertTitle>Invalid prompt</AlertTitle>
+                    <AlertDescription>
+                      Use the options dialog to add parameters to your prompt
+                    </AlertDescription>
+                  </Alert>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <Tooltip label="Batch mode">
+              <Button
+                opacity={prompt.batchMode ? 0.5 : 1}
+                onClick={() =>
+                  setPrompt((p) => ({ ...p, batchMode: !p.batchMode }))
+                }
+                pos="absolute"
+                top={4}
+                left={4}
+                colorScheme={prompt.batchMode ? "green" : "blackAlpha"}
+              >
+                <MdOutlineBatchPrediction />
+              </Button>
+            </Tooltip>
             <Box
-              px={8}
+              p={8}
               transition="all 0.5s"
               pr={prompt.prompt || prompt.refImages?.length > 1 ? "122px" : 8}
               resize="none"
               w="800px"
-              h="100px"
+              h="full"
               bgColor="blackAlpha.800"
-              as="input"
+              as={prompt.batchMode ? "textarea" : "input"}
               display="flex"
               justifyContent="center"
               alignItems="center"
               color="white"
               textAlign="center"
               fontSize={getFontSize()}
-              placeholder="Imagine something! Enter your prompt here 🤖"
+              placeholder={
+                prompt.batchMode
+                  ? "Imagine many things! Enter one prompt per row"
+                  : "Imagine something! Enter your prompt here 🤖"
+              }
               onChange={(e: React.ChangeEvent<any>) =>
                 setPrompt((p) => ({ ...p, prompt: e.target.value }))
               }
@@ -98,6 +156,7 @@ const PromptInput = () => {
                   transition={{ duration: 0.5 }}
                 >
                   <Button
+                    isDisabled={invalidPrompt}
                     borderRadius={0}
                     pos="absolute"
                     right={0}

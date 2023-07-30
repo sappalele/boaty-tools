@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Checkbox } from "@chakra-ui/react";
 import { useAtom, useAtomValue } from "jotai";
 import { useWindowSize } from "react-use";
 import {
@@ -27,85 +27,76 @@ const RefImagesList = () => {
 
   return (
     <Box mb="100px">
-      {/* <List
+      <Box
         width={1000}
         height={windowSize.height - 100}
-        rowHeight={200}
-        rowCount={Math.ceil(arr.length / 5)}
-        overscanRowCount={3}
-        style={{ paddingBottom: "110px" }}
-        rowRenderer={({ index, key, style }) => (
-          <Box
-            key={key}
-            overflow="hidden"
-            display="flex"
-            justifyContent="center"
-            style={style}
+        paddingBottom="110px"
+        display="flex"
+        flexWrap="wrap"
+        overflow="auto"
+      >
+        {arr.map(([id, image]) => (
+          <Button
+            h="full"
+            w="full"
+            maxW="197px"
+            maxH="197px"
+            variant="unstyled"
+            key={id}
+            style={
+              prompt.refImages?.find((r) => r.id === id)
+                ? {
+                    filter: "brightness(1.2)",
+                  }
+                : undefined
+            }
+            _hover={{ filter: "brightness(0.7)" }}
+            onClick={() => {
+              if (prompt.refImages?.find((r) => r.id === id)) {
+                setPrompt((p) => ({
+                  ...p,
+                  refImages: p.refImages.filter((r) => r.id !== id),
+                }));
+              } else {
+                setPrompt((p) => ({
+                  ...p,
+                  refImages: [...p.refImages, image],
+                }));
+              }
+            }}
           >
-            {arr.slice(index * 5, (index + 1) * 5).map(([id, image]) => (
-              <Button
-                h="full"
+            <Box
+              transition={"all 0.5s"}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              w="full"
+              h="full"
+              pos="relative"
+            >
+              <Box pos="absolute" right={4} bottom={4}>
+                <Checkbox
+                  pointerEvents="none"
+                  size="lg"
+                  colorScheme="blackAlpha"
+                  bg="blackAlpha.800"
+                  color="white"
+                  isChecked={!!prompt.refImages?.find((r) => r.id === id)}
+                ></Checkbox>
+              </Box>
+              <Box
+                as="img"
+                src={image.url}
                 w="full"
+                h="full"
+                objectFit="contain"
                 maxW="200px"
                 maxH="200px"
-                variant="unstyled"
-                key={id}
-                style={
-                  prompt.refImages?.find((r) => r.id === id)
-                    ? {
-                        filter: "brightness(1.2)",
-                      }
-                    : undefined
-                }
-                _hover={{ filter: "brightness(0.7)" }}
-                onClick={() => {
-                  if (prompt.refImages?.find((r) => r.id === id)) {
-                    setPrompt((p) => ({
-                      ...p,
-                      refImages: p.refImages.filter((r) => r.id !== id),
-                    }));
-                  } else {
-                    setPrompt((p) => ({
-                      ...p,
-                      refImages: [...p.refImages, image],
-                    }));
-                  }
-                }}
-              >
-                <Box
-                  transition={"all 0.5s"}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  w="full"
-                  h="full"
-                  pos="relative"
-                >
-                  <Box pos="absolute" right={4} bottom={4}>
-                    <Checkbox
-                      pointerEvents="none"
-                      size="lg"
-                      colorScheme="blackAlpha"
-                      bg="blackAlpha.800"
-                      color="white"
-                      isChecked={!!prompt.refImages?.find((r) => r.id === id)}
-                    ></Checkbox>
-                  </Box>
-                  <Box
-                    as="img"
-                    src={image.url}
-                    w="full"
-                    h="full"
-                    objectFit="contain"
-                    maxW="200px"
-                    maxH="200px"
-                  />
-                </Box>
-              </Button>
-            ))}
-          </Box>
-        )}
-      /> */}
+              />
+            </Box>
+          </Button>
+        ))}
+      </Box>
     </Box>
   );
 };
